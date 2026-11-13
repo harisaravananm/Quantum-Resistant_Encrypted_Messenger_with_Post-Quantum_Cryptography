@@ -12,36 +12,36 @@
 </p>
 
 <p align="center">
-  <a href="#-at-a-glance">Overview</a> Â·
-  <a href="#-milestones">Milestones</a> Â·
-  <a href="#-architecture">Architecture</a> Â·
-  <a href="#-quick-start">Quick start</a> Â·
-  <a href="#-testing--verification">Testing</a> Â·
-  <a href="#-security-model">Security</a> Â·
+  <a href="#-at-a-glance">Overview</a> ·
+  <a href="#-milestones">Milestones</a> ·
+  <a href="#-architecture">Architecture</a> ·
+  <a href="#-quick-start">Quick start</a> ·
+  <a href="#-testing--verification">Testing</a> ·
+  <a href="#-security-model">Security</a> ·
   <a href="#-limitations--roadmap">Roadmap</a>
 </p>
 
 ---
 
-## âœ¨ At a Glance
+## ✨ At a Glance
 
 | | |
 |---|---|
-| ðŸ”‘ **Key exchange** | ML-KEM-768 (NIST FIPS 203), lattice-based, resists Shor's algorithm |
-| ðŸ”’ **Message encryption** | AES-256-GCM, unique key and random 96-bit IV for every message |
-| ðŸ” **Key ratchet** | HKDF-SHA256 root key, HMAC-SHA256 chain, old keys are overwritten |
-| ðŸ›°ï¸ **Relay** | Forwards opaque ciphertext only. Rate-limited, replay-protected, queues for offline users |
-| ðŸ–¥ï¸ **Client** | Single-file browser app with live encryption metadata and a safety-number check |
-| âœ… **Verified** | NIST ACVP known-answer tests, tamper and replay tests, Rust â†” JS interoperability, wire-capture test |
+| 🔑 **Key exchange** | ML-KEM-768 (NIST FIPS 203), lattice-based, resists Shor's algorithm |
+| 🔒 **Message encryption** | AES-256-GCM, unique key and random 96-bit IV for every message |
+| 🔁 **Key ratchet** | HKDF-SHA256 root key, HMAC-SHA256 chain, old keys are overwritten |
+| 🛰️ **Relay** | Forwards opaque ciphertext only. Rate-limited, replay-protected, queues for offline users |
+| 🖥️ **Client** | Single-file browser app with live encryption metadata and a safety-number check |
+| ✅ **Verified** | NIST ACVP known-answer tests, tamper and replay tests, Rust ↔ JS interoperability, wire-capture test |
 
-## ðŸ—ºï¸ Milestones
+## 🗺️ Milestones
 
 | # | Milestone | Where | Status |
 |:-:|-----------|-------|:------:|
-| 1 | Post-Quantum Key Encapsulation (ML-KEM-768) | [`pq-kem`](pq-kem) | âœ… |
-| 2 | Double Ratchet and AES-256-GCM Encryption | [`pq-kem`](pq-kem) | âœ… |
-| 3 | Asynchronous WebSocket Relay Server | [`pq-relay`](pq-relay) | âœ… |
-| 4 | Terminal & Web Interface with Security Verification | [`pq-web`](pq-web) | âœ… |
+| 1 | Post-Quantum Key Encapsulation (ML-KEM-768) | [`pq-kem`](pq-kem) | ✅ |
+| 2 | Double Ratchet and AES-256-GCM Encryption | [`pq-kem`](pq-kem) | ✅ |
+| 3 | Asynchronous WebSocket Relay Server | [`pq-relay`](pq-relay) | ✅ |
+| 4 | Terminal & Web Interface with Security Verification | [`pq-web`](pq-web) | ✅ |
 
 <details>
 <summary><b>Milestone 1: Post-Quantum Key Encapsulation</b></summary>
@@ -93,12 +93,12 @@
 
 </details>
 
-## ðŸ—ï¸ Architecture
+## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
-    A["Alice (browser)<br/>ML-KEM Â· ratchet Â· AES-GCM"] -->|"ciphertext only"| R[("Relay<br/>opaque payloads")]
-    R -->|"ciphertext only"| B["Bob (browser)<br/>ML-KEM Â· ratchet Â· AES-GCM"]
+    A["Alice (browser)<br/>ML-KEM · ratchet · AES-GCM"] -->|"ciphertext only"| R[("Relay<br/>opaque payloads")]
+    R -->|"ciphertext only"| B["Bob (browser)<br/>ML-KEM · ratchet · AES-GCM"]
 ```
 
 ### Handshake and messaging
@@ -138,8 +138,8 @@ flowchart TD
 ### Wire format
 
 ```text
-Handshake : 0x01 â€– ML-KEM ciphertext (1088 B)
-Message   : 0x02 â€– n (4 B) â€– nonce (12 B) â€– AES-256-GCM ciphertext â€– tag (16 B)
+Handshake : 0x01 ‖ ML-KEM ciphertext (1088 B)
+Message   : 0x02 ‖ n (4 B) ‖ nonce (12 B) ‖ AES-256-GCM ciphertext ‖ tag (16 B)
             AAD = n          key = fresh message key       payload is hex inside JSON
 ```
 
@@ -153,24 +153,24 @@ Message   : 0x02 â€– n (4 B) â€– nonce (12 B) â€– AES-256-GCM cip
 
 Full details: [`ARCHITECTURE.md`](pq-web/docs/ARCHITECTURE.md)
 
-## ðŸ“¦ Repository Structure
+## 📦 Repository Structure
 
 ```text
 pq-messenger/
-â”œâ”€â”€ pq-kem/        Milestones 1-2: ML-KEM-768, ratchet, AES-256-GCM (Rust)
-â”‚   â”œâ”€â”€ src/       lib.rs (ratchet), main.rs (demo)
-â”‚   â””â”€â”€ tests/     NIST KAT, ratchet, roundtrip, vectors/
-â”œâ”€â”€ pq-relay/      Milestone 3: WebSocket relay (Rust, Tokio)
-â”‚   â”œâ”€â”€ src/       lib.rs (server), main.rs
-â”‚   â””â”€â”€ tests/     integration tests
-â”œâ”€â”€ pq-web/        Milestone 4: browser client (JavaScript)
-â”‚   â”œâ”€â”€ dist/      index.html (single-file app, no install needed)
-â”‚   â”œâ”€â”€ src/       crypto.js, client.js, app.js
-â”‚   â””â”€â”€ docs/      ARCHITECTURE.md, WIRESHARK.md
-â””â”€â”€ docs/          banner.svg
+|-- pq-kem/        Milestones 1-2: ML-KEM-768, ratchet, AES-256-GCM (Rust)
+|   |-- src/       lib.rs (ratchet), main.rs (demo)
+|   `-- tests/     NIST KAT, ratchet, roundtrip, vectors/
+|-- pq-relay/      Milestone 3: WebSocket relay (Rust, Tokio)
+|   |-- src/       lib.rs (server), main.rs
+|   `-- tests/     integration tests
+|-- pq-web/        Milestone 4: browser client (JavaScript)
+|   |-- dist/      index.html (single-file app, no install needed)
+|   |-- src/       crypto.js, client.js, app.js
+|   `-- docs/      ARCHITECTURE.md, WIRESHARK.md
+`-- docs/          banner.svg
 ```
 
-## ðŸš€ Quick Start
+## 🚀 Quick Start
 
 **Prerequisites:** [Rust](https://rustup.rs) (stable). On Windows also install *Build Tools for Visual Studio* with **Desktop development with C++**. Node.js 18+ is only needed for the JavaScript tests.
 
@@ -203,7 +203,7 @@ With the relay running, open `pq-web/dist/index.html` in **two browser tabs**:
 4. Click **Send tampered** to watch the MAC check reject a corrupted message
 5. Compare the **safety number** in both tabs; they must match
 
-## ðŸ§ª Testing & Verification
+## 🧪 Testing & Verification
 
 | Suite | Command | Checks |
 |-------|---------|:------:|
@@ -211,7 +211,7 @@ With the relay running, open `pq-web/dist/index.html` in **two browser tabs**:
 | Ratchet, tamper, replay, roundtrip | `cargo test` in `pq-kem` | 11 |
 | Relay unit and integration | `cargo test` in `pq-relay` | 8 |
 | End-to-end and wire capture | `node test-e2e.mjs` in `pq-web` | 10 |
-| Rust â†” JavaScript interoperability | `node test-interop.mjs` in `pq-web` | 1 |
+| Rust ↔ JavaScript interoperability | `node test-interop.mjs` in `pq-web` | 1 |
 
 The end-to-end test routes traffic through a sniffing proxy, proves the plaintext never appears on the wire, and includes a **negative control** (a deliberately unencrypted payload *is* detected) so the check cannot pass vacuously.
 
@@ -227,7 +227,7 @@ Capture on the loopback adapter with `tcp port 9001`, send the phrase `TOP-SECRE
 
 Step-by-step: [`WIRESHARK.md`](pq-web/docs/WIRESHARK.md)
 
-## ðŸ›¡ï¸ Security Model
+## 🛡️ Security Model
 
 | Party | Can see | Cannot see |
 |-------|---------|------------|
@@ -245,7 +245,7 @@ Step-by-step: [`WIRESHARK.md`](pq-web/docs/WIRESHARK.md)
 
 Ten threats with residual risks: [`ARCHITECTURE.md`](pq-web/docs/ARCHITECTURE.md#7-threat-model)
 
-## âš ï¸ Limitations & Roadmap
+## ⚠️ Limitations & Roadmap
 
 > This is an educational project. It has **not** been independently audited. Do not use it to protect real secrets.
 
@@ -256,7 +256,7 @@ Ten threats with residual risks: [`ARCHITECTURE.md`](pq-web/docs/ARCHITECTURE.md
 - [ ] **Encrypted key storage:** the demo UI keeps the private key in `localStorage`
 - [ ] Out-of-order message buffering and a terminal client
 
-## ðŸ§° Tech Stack
+## 🧰 Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -266,17 +266,17 @@ Ten threats with residual risks: [`ARCHITECTURE.md`](pq-web/docs/ARCHITECTURE.md
 | Client | Vanilla JavaScript, bundled with esbuild into one HTML file |
 | Verification | NIST ACVP vectors, Node.js `ws` sniffing proxy, Wireshark |
 
-## ðŸ“š References
+## 📚 References
 
 - [NIST FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism (ML-KEM)](https://csrc.nist.gov/pubs/fips/203/final)
 - [NIST ACVP test vectors](https://github.com/usnistgov/ACVP-Server)
 - [RFC 5869: HKDF](https://www.rfc-editor.org/rfc/rfc5869)
 - [Signal Double Ratchet specification](https://signal.org/docs/specifications/doubleratchet/)
 
-## ðŸ‘¤ Author
+## 👤 Author
 
-**Hari Saravanan M**: [GitHub](https://github.com/harisaravananm) Â· [LinkedIn](https://linkedin.com/in/hari-saravanan-m-) Â· [Portfolio](https://harisaravananm.github.io/Myportfolio)
+**Hari Saravanan M**: [GitHub](https://github.com/harisaravananm) · [LinkedIn](https://linkedin.com/in/hari-saravanan-m-) · [Portfolio](https://harisaravananm.github.io/Myportfolio)
 
-## ðŸ“„ License
+## 📄 License
 
 [MIT](LICENSE)
